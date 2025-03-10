@@ -1,0 +1,7 @@
+python -m venv venv
+source venv/bin/activate 
+
+step : 2
+
+Install Flask and essential libraries:
+pip install flask flask_sqlalchemy flask_migrate flask_cors googlemaps networkx ortools

@@ -5,3 +5,42 @@ step : 2
 
 Install Flask and essential libraries:
 pip install flask flask_sqlalchemy flask_migrate flask_cors googlemaps networkx ortools
+
+Step 3:
+
+file structure
+route_optimization_project/
+│── app/                    
+│   │── static/              
+│   │── templates/           
+│   │── routes/              
+│   │   │── __init__.py      
+│   │   │── main.py          # Frontend routes
+│   │   │── api.py           # API for route optimization
+│   │── models/              
+│   │   │── __init__.py      
+│   │   │── delivery.py      # Database models
+│   │── services/            
+│   │   │── __init__.py      
+│   │   │── optimizer.py     # Route optimization logic
+│   │   │── gps_tracking.py  # Real-time GPS tracking
+│   │── __init__.py          
+│   │── config.py            
+│
+│── instance/                
+│   │── config.py            
+│
+│── migrations/              
+│── tests/                   
+│   │── test_routes.py       
+│   │── test_optimizer.py    
+│
+│── requirements.txt          
+│── run.py                    # Main entry point
+│── README.md                
+
+
+Install Required Libraries
+
+pip install flask flask_sqlalchemy flask_migrate flask_cors googlemaps networkx ortools
+pip freeze > requirements.txt

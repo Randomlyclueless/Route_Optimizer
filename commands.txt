@@ -42,10 +42,6 @@ route_optimization_project/
 
 Install Required Libraries
 
-pip install flask flask_sqlalchemy flask_migrate flask_cors googlemaps networkx ortools
-pip freeze > requirements.txt
-
-
 setting database- MY SQL
 
 pip install mysql-connector-python flask-mysql flask-sqlalchemy

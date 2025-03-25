@@ -1,34 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Route Map</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Route Map with Interactive Features</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        #map {
-            width: 100%;
-            height: 100vh;
-        }
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+      .info {
+        padding: 8px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+      }
     </style>
-</head>
-<body>
-    <h1>Route Map</h1>
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        var map = L.map('map').setView([0, 0], 2); // Default view
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
+  </head>
 
-        // Load the GeoJSON route
-        fetch('osm_route_map.geojson')
-            .then(response => response.json())
-            .then(data => {
-                L.geoJSON(data).addTo(map);
-                map.fitBounds(L.geoJSON(data).getBounds());
-            });
+  <body>
+    <h1>Interactive Route Map</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+      const map = L.map("map").setView([0, 0], 2); // Default view (can be updated)
+
+      // Add tile layer (OpenStreetMap)
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+      }).addTo(map);
+
+      // Load GeoJSON route from the server
+      fetch("osm_route_map.geojson")
+        .then((response) => response.json())
+        .then((data) => {
+          const routeLayer = L.geoJSON(data, {
+            style: { color: "blue", weight: 4 },
+          }).addTo(map);
+          map.fitBounds(routeLayer.getBounds());
+        });
+
+      // Draggable Start and End markers
+      const startMarker = L.marker([19.076, 72.8777], { draggable: true })
+        .addTo(map)
+        .bindPopup("Start Point")
+        .openPopup();
+      const endMarker = L.marker([19.216, 72.8837], { draggable: true })
+        .addTo(map)
+        .bindPopup("End Point");
+
+      // Function to handle route updates between draggable points
+      function updateRoute() {
+        const start = startMarker.getLatLng();
+        const end = endMarker.getLatLng();
+
+        L.Routing.control({
+          waypoints: [
+            L.latLng(start.lat, start.lng),
+            L.latLng(end.lat, end.lng),
+          ],
+          routeWhileDragging: true,
+          createMarker: function () {
+            return null;
+          }, // Hide additional markers created by routing
+        }).addTo(map);
+      }
+
+      // Attach drag events to update route on marker move
+      startMarker.on("dragend", updateRoute);
+      endMarker.on("dragend", updateRoute);
+
+      // Draw initial route
+      updateRoute();
     </script>
-</body>
+  </body>
 </html>

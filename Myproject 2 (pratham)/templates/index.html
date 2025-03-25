@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteX </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            width: 350px;
+        }
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .title img {
+            width: 30px;
+            height: 30px;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #e2e8f0;
+            color: #1e293b;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2f7dddf7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>RouteX</h1>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="RouteX Logo">
+        </div>
+        <form method="POST">
+            <label for="start_location">Start Location:</label>
+            <input type="text" id="start_location" name="start_location" placeholder="Enter start location" required>
+            <label for="end_location">End Location:</label>
+            <input type="text" id="end_location" name="end_location" placeholder="Enter end location" required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</body>
+</html>

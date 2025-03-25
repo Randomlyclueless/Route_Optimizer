@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RouteX - Smart Route Optimization</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --secondary: #10b981;
+        --dark: #0f172a;
+        --dark-light: #1e293b;
+        --light: #f8fafc;
+        --gray: #64748b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, var(--dark), var(--dark-light));
+        color: var(--light);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .header {
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+      }
+
+      .title {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin: 0;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: var(--gray);
+        margin-top: 5px;
+      }
+
+      .search-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        animation: slideUp 0.8s ease-out;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 1rem;
+      }
+
+      .input-container {
+        position: relative;
+      }
+
+      .input-container i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: none;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      }
+
+      .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(
+          to right,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(
+          to right,
+          var(--primary-dark),
+          var(--primary)
+        );
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .features {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        max-width: 800px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        gap: 20px;
+        animation: fadeIn 1.2s ease-out;
+      }
+
+      .feature {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        width: 180px;
+        text-align: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .feature:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .feature i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: var(--primary);
+      }
+
+      .feature h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      .feature p {
+        font-size: 0.9rem;
+        color: var(--gray);
+      }
+
+      .swap-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--light);
+        z-index: 10;
+      }
+
+      .swap-btn:hover {
+        background: var(--primary);
+      }
+
+      .locations-container {
+        position: relative;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .search-card {
+          padding: 30px 20px;
+        }
+
+        .title {
+          font-size: 2.5rem;
+        }
+
+        .features {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo-container">
+          <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="RouteX Logo"
+            class="logo"
+          />
+          <h1 class="title">RouteX</h1>
+        </div>
+        <p class="subtitle">Smart Route Optimization for Efficient Travel</p>
+      </div>
+
+      <div class="search-card">
+        <form method="POST" action="{{ url_for('find_route') }}">
+          <div class="locations-container">
+            <div class="form-group">
+              <label for="start_location">Start Location</label>
+              <div class="input-container">
+                <i class="fas fa-map-marker-alt"></i>
+                <input
+                  type="text"
+                  id="start_location"
+                  name="start_location"
+                  class="form-control"
+                  placeholder="Enter starting point"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <button type="button" class="swap-btn" id="swap-locations">
+              <i class="fas fa-exchange-alt"></i>
+            </button>
+
+            <div class="form-group">
+              <label for="end_location">Destination</label>
+              <div class="input-container">
+                <i class="fas fa-flag-checkered"></i>
+                <input
+                  type="text"
+                  id="end_location"
+                  name="end_location"
+                  class="form-control"
+                  placeholder="Enter destination"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="travel_mode">Travel Mode</label>
+            <div class="input-container">
+              <i class="fas fa-car"></i>
+              <select id="travel_mode" name="travel_mode" class="form-control">
+                <option value="driving">Driving</option>
+                <option value="walking">Walking</option>
+                <option value="bicycling">Bicycling</option>
+                <option value="transit">Public Transit</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn">
+            <i class="fas fa-route"></i>
+            Find Optimal Route
+          </button>
+        </form>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-tachometer-alt"></i>
+          <h3>Fast Routes</h3>
+          <p>Find the quickest path to your destination</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-gas-pump"></i>
+          <h3>Fuel Efficient</h3>
+          <p>Save fuel with optimized routes</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-traffic-light"></i>
+          <h3>Live Traffic</h3>
+          <p>Real-time traffic updates</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-map-marked-alt"></i>
+          <h3>Multiple Options</h3>
+          <p>Compare alternative routes</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const swapBtn = document.getElementById("swap-locations");
+        const startInput = document.getElementById("start_location");
+        const endInput = document.getElementById("end_location");
+
+        swapBtn.addEventListener("click", function () {
+          const temp = startInput.value;
+          startInput.value = endInput.value;
+          endInput.value = temp;
+
+          // Add animation
+          startInput.style.animation = "fadeIn 0.5s";
+          endInput.style.animation = "fadeIn 0.5s";
+
+          setTimeout(() => {
+            startInput.style.animation = "";
+            endInput.style.animation = "";
+          }, 500);
+        });
+      });
+    </script>
+  </body>
+</html>

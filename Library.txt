@@ -1,0 +1,4 @@
+.\venv\Scripts\Activate.ps1
+cd "Your Path where you save folder"
+pip install Flask geopy folium requests
+python app.py

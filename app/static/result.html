@@ -568,307 +568,152 @@
         }
       }
     </style>
-  </head>
-  <body>
-    <div class="header">
-      <div class="logo-container">
-        <img
-          src="{{ url_for('static', filename='logo.png') }}"
-          alt="RouteX Logo"
-          class="logo"
-        />
-        <h1 class="title">RouteX</h1>
-      </div>
-      <div class="actions">
-        <a href="/" class="btn">
-          <i class="fas fa-search"></i>
-          New Route
-        </a>
-        <button class="btn btn-primary" id="share-btn">
-          <i class="fas fa-share-alt"></i>
-          Share
-        </button>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="route-summary">
-        <div class="route-header">
-          <h2 class="route-title">Route Summary</h2>
-          <span class="route-date">{{ current_date }}</span>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>RouteX - Route Result</title>
+    
+      <!-- Font Awesome for icons -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+      
+      <!-- Leaflet CSS -->
+      <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+      <!-- Your custom CSS -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+      <style>
+        #map {
+          height: 400px;
+          width: 100%;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+          margin-top: 1rem;
+        }
+      </style>
+    </head>
+    
+    <body>
+      <div class="header">
+        <div class="logo-container">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="RouteX Logo" class="logo"/>
+          <h1 class="title">RouteX</h1>
         </div>
-
-        <div class="route-locations">
-          <div class="location-card">
-            <div class="location-label">Starting Point</div>
-            <div class="location-value">Pune</div>
-          </div>
-          <div class="location-connector"></div>
-          <div class="location-card">
-            <div class="location-label">Destination</div>
-            <div class="location-value">Shivajinagar</div>
-          </div>
-        </div>
-
-        <div class="route-stats">
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-road"></i></div>
-            <div class="stat-value">2.7 km</div>
-            <div class="stat-label">Total Distance</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-clock"></i></div>
-            <div class="stat-value">3.2 min</div>
-            <div class="stat-label">Estimated Time</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-gas-pump"></i></div>
-            <div class="stat-value">0.2 L</div>
-            <div class="stat-label">Fuel Consumption</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-traffic-light"></i></div>
-            <div class="stat-value">3</div>
-            <div class="stat-label">Traffic Lights</div>
-          </div>
-        </div>
-
-        <div class="route-actions">
-          <button class="action-btn action-btn-primary" id="view-map-btn">
-            <i class="fas fa-map-marked-alt"></i>
-            View Interactive Map
-          </button>
-          <button class="action-btn action-btn-secondary" id="download-btn">
-            <i class="fas fa-download"></i>
-            Download Directions
-          </button>
-          <button class="action-btn action-btn-secondary" id="print-btn">
-            <i class="fas fa-print"></i>
-            Print
-          </button>
+        <div class="actions">
+          <a href="/" class="btn"><i class="fas fa-search"></i> New Route</a>
+          <button class="btn btn-primary" id="share-btn"><i class="fas fa-share-alt"></i> Share</button>
         </div>
       </div>
-
-      <div class="route-options">
-        <div class="route-option active" data-route="1">
-          <div class="route-option-header">
-            <div class="route-option-title">
-              <i class="fas fa-bolt" style="color: #3b82f6"></i>
-              Fastest Route
-              <span class="route-option-badge">Recommended</span>
+    
+      <div class="container">
+        <div class="route-summary">
+          <div class="route-header">
+            <h2 class="route-title">Route Summary</h2>
+            <span class="route-date">{{ current_date }}</span>
+          </div>
+    
+          <div class="route-locations">
+            <div class="location-card">
+              <div class="location-label">Starting Point</div>
+              <div class="location-value">{{ start }}</div>
+            </div>
+            <div class="location-connector"></div>
+            <div class="location-card">
+              <div class="location-label">Destination</div>
+              <div class="location-value">{{ end }}</div>
             </div>
           </div>
-          <div class="route-option-stats">
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">2.7 km</div>
-              <div class="route-option-stat-label">Distance</div>
+    
+          <div class="route-stats">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-road"></i></div>
+              <div class="stat-value">{{ distance }}</div>
+              <div class="stat-label">Total Distance</div>
             </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">3.2 min</div>
-              <div class="route-option-stat-label">Time</div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-clock"></i></div>
+              <div class="stat-value">{{ time }}</div>
+              <div class="stat-label">Estimated Time</div>
             </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">0.2 L</div>
-              <div class="route-option-stat-label">Fuel</div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-gas-pump"></i></div>
+              <div class="stat-value">{{ fuel }}</div>
+              <div class="stat-label">Fuel Consumption</div>
             </div>
-          </div>
-          <div class="route-option-features">
-            <div class="route-feature">
-              <i class="fas fa-road"></i> Main roads
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-traffic-light"></i> 3 traffic lights
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-car"></i> Low traffic
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-traffic-light"></i></div>
+              <div class="stat-value">{{ traffic_lights }}</div>
+              <div class="stat-label">Traffic Lights</div>
             </div>
           </div>
-        </div>
-
-        <div class="route-option" data-route="2">
-          <div class="route-option-header">
-            <div class="route-option-title">
-              <i class="fas fa-compress-arrows-alt" style="color: #10b981"></i>
-              Shortest Route
-            </div>
-          </div>
-          <div class="route-option-stats">
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">2.5 km</div>
-              <div class="route-option-stat-label">Distance</div>
-            </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">3.5 min</div>
-              <div class="route-option-stat-label">Time</div>
-            </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">0.18 L</div>
-              <div class="route-option-stat-label">Fuel</div>
-            </div>
-          </div>
-          <div class="route-option-features">
-            <div class="route-feature">
-              <i class="fas fa-road"></i> Side roads
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-traffic-light"></i> 5 traffic lights
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-car"></i> Moderate traffic
-            </div>
+    
+          <div class="route-actions">
+            <button class="action-btn action-btn-primary" id="view-map-btn">
+              <i class="fas fa-map-marked-alt"></i> View Interactive Map
+            </button>
+            <button class="action-btn action-btn-secondary" id="download-btn">
+              <i class="fas fa-download"></i> Download Directions
+            </button>
+            <button class="action-btn action-btn-secondary" id="print-btn">
+              <i class="fas fa-print"></i> Print
+            </button>
           </div>
         </div>
-
-        <div class="route-option" data-route="3">
-          <div class="route-option-header">
-            <div class="route-option-title">
-              <i class="fas fa-leaf" style="color: #10b981"></i>
-              Eco-Friendly Route
-            </div>
-          </div>
-          <div class="route-option-stats">
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">3.0 km</div>
-              <div class="route-option-stat-label">Distance</div>
-            </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">4.1 min</div>
-              <div class="route-option-stat-label">Time</div>
-            </div>
-            <div class="route-option-stat">
-              <div class="route-option-stat-value">0.15 L</div>
-              <div class="route-option-stat-label">Fuel</div>
-            </div>
-          </div>
-          <div class="route-option-features">
-            <div class="route-feature">
-              <i class="fas fa-road"></i> Less elevation
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-leaf"></i> Fuel efficient
-            </div>
-            <div class="route-feature">
-              <i class="fas fa-car"></i> Fewer stops
-            </div>
-          </div>
+    
+        <div class="map-preview">
+          <h2>Route Preview</h2>
+          <div id="map"></div>
         </div>
-      </div>
-
-      <div class="map-preview">
-        <h2>Route Preview</h2>
-        <div class="map-container">
-          <img
-            src="{{ url_for('static', filename='map_preview.jpg') }}"
-            alt="Route Map Preview"
-            onerror="this.src='https://via.placeholder.com/800x400?text=Route+Map+Preview'"
-          />
-          <div class="map-overlay">
-            <i class="fas fa-map-marker-alt" style="color: #3b82f6"></i>
-            <span class="map-overlay-text">Pune to Shivajinagar - 2.7 km</span>
-          </div>
-          <button class="view-full-map-btn" id="view-full-map-btn">
-            <i class="fas fa-expand-alt"></i>
-            View Full Map
-          </button>
-        </div>
-      </div>
-
-      <div class="directions">
-        <h2>Turn-by-Turn Directions</h2>
-        <div class="direction-steps">
-          <div class="direction-step">
-            <div class="step-icon">
-              <i class="fas fa-play"></i>
-            </div>
-            <div class="step-content">
-              <div class="step-instruction">Start from Pune</div>
-              <div class="step-details">
-                <span><i class="fas fa-compass"></i> Head north</span>
+    
+        <div class="directions">
+          <h2>Turn-by-Turn Directions</h2>
+          <div class="direction-steps">
+            {% for step in directions %}
+            <div class="direction-step">
+              <div class="step-icon">
+                <i class="fas fa-{{ step.icon }}"></i>
+              </div>
+              <div class="step-content">
+                <div class="step-instruction">{{ step.instruction }}</div>
+                <div class="step-details">
+                  <span><i class="fas fa-info-circle"></i> {{ step.details }}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="direction-step">
-            <div class="step-icon">
-              <i class="fas fa-arrow-right"></i>
-            </div>
-            <div class="step-content">
-              <div class="step-instruction">Turn right onto Main Road</div>
-              <div class="step-details">
-                <span><i class="fas fa-road"></i> 0.5 km</span>
-                <span><i class="fas fa-clock"></i> 1 min</span>
-              </div>
-            </div>
-          </div>
-          <div class="direction-step">
-            <div class="step-icon">
-              <i class="fas fa-arrow-left"></i>
-            </div>
-            <div class="step-content">
-              <div class="step-instruction">Turn left onto FC Road</div>
-              <div class="step-details">
-                <span><i class="fas fa-road"></i> 1.2 km</span>
-                <span><i class="fas fa-clock"></i> 1.5 min</span>
-              </div>
-            </div>
-          </div>
-          <div class="direction-step">
-            <div class="step-icon">
-              <i class="fas fa-arrow-right"></i>
-            </div>
-            <div class="step-content">
-              <div class="step-instruction">Turn right onto JM Road</div>
-              <div class="step-details">
-                <span><i class="fas fa-road"></i> 0.8 km</span>
-                <span><i class="fas fa-clock"></i> 0.7 min</span>
-              </div>
-            </div>
-          </div>
-          <div class="direction-step">
-            <div class="step-icon">
-              <i class="fas fa-flag-checkered"></i>
-            </div>
-            <div class="step-content">
-              <div class="step-instruction">Arrive at Shivajinagar</div>
-              <div class="step-details">
-                <span
-                  ><i class="fas fa-map-marker-alt"></i> Final destination</span
-                >
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div>
       </div>
-    </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Route options selection
-        const routeOptions = document.querySelectorAll(".route-option");
-        routeOptions.forEach((option) => {
-          option.addEventListener("click", function () {
-            routeOptions.forEach((opt) => opt.classList.remove("active"));
-            this.classList.add("active");
+    
+      <!-- Leaflet JS -->
+      <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Init Map
+          const map = L.map('map').setView([18.5204, 73.8567], 13); // Pune default coords
+    
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+          }).addTo(map);
+    
+          // Sample hardcoded points (replace with actual lat/lng from your routing backend later)
+          const startMarker = L.marker([18.5204, 73.8567]).addTo(map).bindPopup("{{ start }}");
+          const endMarker = L.marker([18.5312, 73.8446]).addTo(map).bindPopup("{{ end }}");
+    
+          const routeLine = L.polyline([
+            [18.5204, 73.8567],
+            [18.5312, 73.8446]
+          ], { color: 'blue' }).addTo(map);
+    
+          map.fitBounds(routeLine.getBounds());
+    
+          // Buttons
+          document.getElementById("view-map-btn").addEventListener("click", function () {
+            window.scrollTo({ top: document.getElementById("map").offsetTop - 60, behavior: "smooth" });
           });
-        });
-
-        // View map button
-        document
-          .getElementById("view-map-btn")
-          .addEventListener("click", function () {
-            window.location.href = "/map";
-          });
-
-        // View full map button
-        document
-          .getElementById("view-full-map-btn")
-          .addEventListener("click", function () {
-            window.location.href = "/map";
-          });
-
-        // Share button
-        document
-          .getElementById("share-btn")
-          .addEventListener("click", function () {
+    
+          document.getElementById("share-btn").addEventListener("click", function () {
             const input = document.createElement("input");
             input.value = window.location.href;
             document.body.appendChild(input);
@@ -877,21 +722,15 @@
             document.body.removeChild(input);
             alert("Route link copied to clipboard!");
           });
-
-        // Download button
-        document
-          .getElementById("download-btn")
-          .addEventListener("click", function () {
+    
+          document.getElementById("download-btn").addEventListener("click", function () {
             alert("Directions downloaded successfully!");
           });
-
-        // Print button
-        document
-          .getElementById("print-btn")
-          .addEventListener("click", function () {
+    
+          document.getElementById("print-btn").addEventListener("click", function () {
             window.print();
           });
-      });
-    </script>
-  </body>
+        });
+      </script>
+    </body>
 </html>
